@@ -1,7 +1,8 @@
 import java.util.*;
 
-//This class takes a 3x3 sliding board with 0 being the empty space and finds the shortest
-//path to the goal state with BFS.
+//This class takes a 3x3 sliding board as an argument when the program is ran. 
+//0 being the empty space and finds the shortest path to the goal state with BFS.
+
 
 public class  SolveNinePuzzle{
 	
@@ -17,13 +18,21 @@ public class  SolveNinePuzzle{
 		}
 		public void printPath(Board child,String start){
 			Board curr=child;
-			List<String> options = new ArrayList<>();
+			List<int[][]> options = new ArrayList<>();
 			while(!curr.string.equals(start)){
-				options.add(curr.string);
+				options.add(curr.board);
 				curr=curr.parent;
 			}
-			for(int i=options.size()-1;i>=0;i--){
-				System.out.println(options.remove(i));
+			for(int j=options.size()-1;j>=0;j--){
+				int[][] array = options.get(j);
+				System.out.println();
+				for (int i = 0; i < array.length; i++) {
+					int []sub=array[i];
+					for (int x = 0; x < 3; x++) {
+					System.out.print(sub[x] + " ");
+					}
+					System.out.println();
+				}
 			}
 		}
 	}
@@ -162,8 +171,49 @@ public class  SolveNinePuzzle{
 	
 	
 	public static void main(String args[]){
-		int[][] start = {{4,1,3},{0,2,6},{7,5,8}};
 		int[][] end = {{1,2,3},{4,5,6},{7,8,0}};
-		System.out.println(BFS(end,start));
+		System.out.println("Reading input board");
+		String[] Arg=new String[3];
+		int [][] start=new int[3][3];
+		if (args.length > 0) {
+			try {
+				Arg = args;
+				for(int i=0;i<3;i++){
+					for(int j=0;j<3;j++){
+						start[i][j]=Character.getNumericValue(Arg[i].charAt(j));
+					}
+				}
+			} catch (Exception e) {
+				System.err.println("Argument must be an 3X3 array where each row is separated with a space. EX: 413 026 758 would produce \n413\n026\n758");
+				System.exit(1);
+			}
+		}
+		else{
+			System.err.println("You need to input 3X3 array where each row is separated with a space. EX: 413 026 758 would produce \n413\n026\n758");
+			System.exit(1);
+		}
+		
+		System.out.println("input Board:");
+		for (int i = 0; i < 3; i++) {
+			int [] sub=start[i];
+			for (int x = 0; x < 3; x++) {
+				System.out.print(sub[x] + " ");
+			}
+			System.out.println();
+		}
+		
+
+		System.out.println("\nAttempting to solve input board");
+		long startTime = System.currentTimeMillis();
+		boolean checkValid = BFS(end,start);
+		long endTime = System.currentTimeMillis();
+		double totalTimeSeconds = (endTime-startTime)/1000.0;
+		System.out.println();
+		if(checkValid)
+			System.out.println("Solvable board");
+		if(!checkValid)
+			System.out.println("Not solvable!");
+		System.out.printf("Total Time (seconds): %.4f\n",totalTimeSeconds);
+		
 	}
 }
